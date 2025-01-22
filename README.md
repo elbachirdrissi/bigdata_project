@@ -40,7 +40,7 @@ Le dataset est constitué de **1 631 critiques** de livres collectées sur Amazo
 Le projet a permis de classifier efficacement les critiques de livres en groupes homogènes, ouvrant des perspectives pour des applications dans l'analyse de sentiments, la segmentation de marché et la personnalisation de services.
 
 ## Comment exécuter le projet
-1. **Installation des dépendances** :
+1. **Installation et Configuration d'Apache Hadoop et Apache Mahout** :
    https://github.com/netocosta/HadoopMahout
    
 2. **Création du répertoire HDFS pour les données du projet** :
@@ -55,14 +55,14 @@ Le projet a permis de classifier efficacement les critiques de livres en groupes
    ```
    Cette commande charge les données prétraitées depuis le système local vers le répertoire HDFS.
 4. **Conversion en fichier de séquence** :
- Convertissez les données textuelles en un fichier de séquence (Sequence File), une étape préalable au calcul des vecteurs TF-IDF :
+
     ```bash
       mahout seqdirectory \
    -i hdfs:///user/hadoop/mahout-kmeans/books \
    -o hdfs:///user/hadoop/mahout-kmeans/bookreview_seq \
    -ow
       ```
-
+      Convertissez les données textuelles en un fichier de séquence (Sequence File), une étape préalable au calcul des vecteurs TF-IDF 
 
 5. **Conversion des données en vecteurs TF-IDF** :
    ```bash
