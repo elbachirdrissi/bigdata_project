@@ -51,11 +51,20 @@ Le projet a permis de classifier efficacement les critiques de livres en groupes
 
 3. **Chargement des données sur HDFS** :
    ```bash
-   hdfs dfs -put /home/hadoop/mahout-kneans/bookreview_seq /user/hadoop/mahout-kmeans/
+   hdfs dfs -put /home/hadoop/mahout-kneans/books /user/hadoop/mahout-kmeans/
    ```
    Cette commande charge les données prétraitées depuis le système local vers le répertoire HDFS.
+4. **Conversion en fichier de séquence** :
+ Convertissez les données textuelles en un fichier de séquence (Sequence File), une étape préalable au calcul des vecteurs TF-IDF :
+    ```bash
+      mahout seqdirectory \
+   -i hdfs:///user/hadoop/mahout-kmeans/books \
+   -o hdfs:///user/hadoop/mahout-kmeans/bookreview_seq \
+   -ow
+      ```
 
-4. **Conversion des données en vecteurs TF-IDF** :
+
+5. **Conversion des données en vecteurs TF-IDF** :
    ```bash
    mahout seq2sparse \
    -i hdfs:///user/hadoop/mahout-kmeans/bookreview_seq \
@@ -64,13 +73,13 @@ Le projet a permis de classifier efficacement les critiques de livres en groupes
    ```
    Cette commande transforme les fichiers de critiques textuelles en vecteurs TF-IDF utilisables par l'algorithme K-Means.
 
-5. **Vérification des fichiers vectorisés** :
+6. **Vérification des fichiers vectorisés** :
    ```bash
    hdfs dfs -ls /user/hadoop/mahout-kmeans/bookreview_sparse
    ```
    Elle permet de vérifier la présence et la structure des fichiers dans le répertoire spécifié.
 
-6. **Exécution de l'algorithme K-Means** :
+7. **Exécution de l'algorithme K-Means** :
    ```bash
    mahout kmeans \
    -i hdfs:///user/hadoop/mahout-kmeans/bookreview_sparse/tf-vectors \
@@ -81,13 +90,13 @@ Le projet a permis de classifier efficacement les critiques de livres en groupes
    ```
    Cette commande lance l'algorithme K-Means avec la mesure de distance cosinus, un nombre maximal d'itérations fixé à 10, et 5 clusters.
 
-7. **Vérification des résultats du clustering** :
+8. **Vérification des résultats du clustering** :
    ```bash
    hdfs dfs -ls /user/hadoop/mahout-kmeans/output
    ```
    Elle affiche les fichiers de sortie générés par K-Means, notamment les centroïdes et les clusters.
 
-8. **Affichage des points assignés aux clusters** :
+9. **Affichage des points assignés aux clusters** :
    ```bash
    hdfs dfs -ls /user/hadoop/mahout-kmeans/output/clusteredPoints
    ```
