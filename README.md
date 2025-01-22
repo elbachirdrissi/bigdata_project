@@ -56,6 +56,61 @@ Le projet a permis de classifier efficacement les critiques de livres en groupes
    mahout kmeans -i output-vectors -c clusters -o output-kmeans -k 3 -ow -cl
    ```
 
+   ## Détails des commandes
+
+Voici les commandes principales utilisées dans ce projet, accompagnées d'explications détaillées :
+
+1. **Création du répertoire HDFS pour les données du projet** :
+   ```bash
+   hdfs dfs -mkdir -p /user/hadoop/mahout-kmeans
+   ```
+   Cette commande crée un répertoire sur HDFS pour stocker les fichiers nécessaires au projet.
+
+2. **Chargement des données sur HDFS** :
+   ```bash
+   hdfs dfs -put /home/hadoop/mahout-kneans/bookreview_seq /user/hadoop/mahout-kmeans/
+   ```
+   Cette commande charge les données prétraitées depuis le système local vers le répertoire HDFS.
+
+3. **Conversion des données en vecteurs TF-IDF** :
+   ```bash
+   mahout seq2sparse \
+   -i hdfs:///user/hadoop/mahout-kmeans/bookreview_seq \
+   -o hdfs:///user/hadoop/mahout-kmeans/bookreview_sparse \
+   -ow --weight tfidf --maxDFPercent 85 --namedVector
+   ```
+   Cette commande transforme les fichiers de critiques textuelles en vecteurs TF-IDF utilisables par l'algorithme K-Means.
+
+4. **Vérification des fichiers vectorisés** :
+   ```bash
+   hdfs dfs -ls /user/hadoop/mahout-kmeans/bookreview_sparse
+   ```
+   Elle permet de vérifier la présence et la structure des fichiers dans le répertoire spécifié.
+
+5. **Exécution de l'algorithme K-Means** :
+   ```bash
+   mahout kmeans \
+   -i hdfs:///user/hadoop/mahout-kmeans/bookreview_sparse/tf-vectors \
+   -c hdfs:///user/hadoop/mahout-kmeans/clusters \
+   -o hdfs:///user/hadoop/mahout-kmeans/output \
+   -dm org.apache.mahout.common.distance.CosineDistanceMeasure \
+   -x 10 -k 5 -ow --clustering
+   ```
+   Cette commande lance l'algorithme K-Means avec la mesure de distance cosinus, un nombre maximal d'itérations fixé à 10, et 5 clusters.
+
+6. **Vérification des résultats du clustering** :
+   ```bash
+   hdfs dfs -ls /user/hadoop/mahout-kmeans/output
+   ```
+   Elle affiche les fichiers de sortie générés par K-Means, notamment les centroïdes et les clusters.
+
+7. **Affichage des points assignés aux clusters** :
+   ```bash
+   hdfs dfs -ls /user/hadoop/mahout-kmeans/output/clusteredPoints
+   ```
+   Cette commande vérifie les fichiers contenant les points assignés à chaque cluster.
+
+
    ## Références
 - [Apache Mahout Documentation](https://mahout.apache.org/documentation/users/clustering/k-means-clustering.html)
 - [Exemple de projet similaire sur GitHub](https://github.com/mehulkatara/K-meansApacheMahout)
